@@ -33,7 +33,12 @@ header{
     flex:1;
     white-space:nowrap;
     overflow:hidden;
-    text-overflow:ellipsis; /* ←長い科目も1行 */
+    text-overflow:ellipsis;
+    cursor:pointer; /* ←追加 */
+}
+
+.subject-row b:hover{
+    opacity:0.7;
 }
 
 .delete-mini{
