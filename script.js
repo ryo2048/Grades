@@ -1,8 +1,5 @@
 let openIndex = -1;
 let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
-let deletedSubject=null;
-let deletedIndex=null;
-let undoTimer=null;
 
 function save(){
     localStorage.setItem("subjects",JSON.stringify(subjects));
@@ -104,12 +101,11 @@ oninput="updateAssignment(${i},this.value)">
 
 function deleteSubject(i){
 
-    // 削除データ保持
-    deletedSubject = subjects[i];
-    deletedIndex = i;
+    if(!confirm("削除しますか？")) return;
 
     subjects.splice(i,1);
 
+    // 開いていたカード対策
     if(openIndex===i){
         openIndex=-1;
     }else if(openIndex>i){
@@ -118,50 +114,6 @@ function deleteSubject(i){
 
     save();
     renderList();
-
-    showUndo();
-}
-
-function showUndo(){
-
-    // 既存バー削除
-    const old=document.querySelector(".undo-bar");
-    if(old) old.remove();
-
-    const bar=document.createElement("div");
-    bar.className="undo-bar";
-
-    bar.innerHTML=`
-        科目を削除しました
-        <button onclick="undoDelete()">元に戻す</button>
-    `;
-
-    document.body.appendChild(bar);
-
-    // 5秒後に完全削除
-    undoTimer=setTimeout(()=>{
-        deletedSubject=null;
-        deletedIndex=null;
-        bar.remove();
-    },5000);
-}
-
-function undoDelete(){
-
-    clearTimeout(undoTimer);
-
-    if(deletedSubject!==null){
-
-        subjects.splice(deletedIndex,0,deletedSubject);
-
-        save();
-        renderList();
-    }
-
-    deletedSubject=null;
-    deletedIndex=null;
-
-    document.querySelector(".undo-bar")?.remove();
 }
 
 function moveUp(i,event){
