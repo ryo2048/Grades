@@ -46,7 +46,8 @@ function renderList(){
         div.innerHTML=`
             <div class="subject-row">
                 <span class="drag-handle">☰</span>
-                <b class="subject-name">${sub.name}</b>
+                <b>${sub.name}</b>
+                <button class="edit-mini">✏️</button>
                 <button class="delete-mini">×</button>
             </div>
             
@@ -60,18 +61,18 @@ function renderList(){
             renderList();
         });
 
-        // ★ 名前クリック → 開閉しない
-        div.querySelector(".subject-name")
-        .addEventListener("click",(e)=>{
-            e.stopPropagation();
-            editName(i);
-        });
-
         // ★ 削除
         div.querySelector(".delete-mini")
         .addEventListener("click",(e)=>{
             e.stopPropagation();
             deleteSubject(i);
+        });
+        
+        // ★ 編集ボタン ←ここ追加！！
+        div.querySelector(".edit-mini")
+        .addEventListener("click",(e)=>{
+            e.stopPropagation();
+            editName(i);
         });
 
         // ★ input触ったときカード閉じるの防止（超重要）
