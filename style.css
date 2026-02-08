@@ -157,3 +157,15 @@ button:active{
     background:#ff5c5c;
     margin-top:10px;
 }
+
+/* ===== 合否でカード色変更 ===== */
+
+.card.pass-card{
+    background:#f0fff4; /* 超うっすら緑 */
+    border:2px solid #86efac;
+}
+
+.card.fail-card{
+    background:#fff5f5; /* 超うっすら赤 */
+    border:2px solid #fca5a5;
+}
