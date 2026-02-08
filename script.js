@@ -240,6 +240,8 @@ new Sortable(document.getElementById("subjects"), {
     delayOnTouchOnly:true,
     fallbackTolerance:8,
 
+    scroll: false,
+    
     preventOnFilter:false, // ←追加
 
     onEnd:(evt)=>{
