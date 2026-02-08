@@ -42,8 +42,8 @@ function renderList(){
         
         let cardClass="card";
         
-        const examAvg = calcAverage(sub.scores);
-        const final = examAvg*sub.rate + sub.assignment;
+        const examAvg = calcAverage(sub.scores || [0,0,0,0]);
+        const final = examAvg * sub.rate + (sub.assignment || 0);
         
         if(final>=60){
             cardClass+=" pass-card";
