@@ -50,7 +50,9 @@ function renderList(){
         `;
 
         // 詳細
-        div.onclick=()=>openDetail(i);
+        div.addEventListener("click",()=>{
+            openDetail(i);
+        });
 
         // ===== タッチドラッグ =====
         div.addEventListener("touchstart",(e)=>{
