@@ -134,3 +134,10 @@ button:active{
     background:#ff5c5c;
     margin-top:10px;
 }
+
+.drag-handle{
+    cursor:grab;
+    font-size:20px;
+    padding:4px 8px;
+    color:#888;
+}
