@@ -4,6 +4,7 @@ function save(){
     localStorage.setItem("subjects",JSON.stringify(subjects));
 }
 
+// ===== 科目追加 =====
 function addSubject(){
 
     const name=document.getElementById("name").value;
@@ -22,82 +23,97 @@ function addSubject(){
     });
 
     save();
-    render();
+    renderList();
 
     document.getElementById("name").value="";
     document.getElementById("rate").value="";
 }
 
-function updateScore(i,index,value){
-    subjects[i].scores[index]=parseFloat(value)||0;
-    save();
-    render();
-}
-
-function updateAssignment(i,value){
-    subjects[i].assignment=parseFloat(value)||0;
-    save();
-    render();
-}
-
-function deleteSubject(i){
-    subjects.splice(i,1);
-    save();
-    render();
-}
-
-function render(){
+// ===== 一覧表示 =====
+function renderList(){
 
     const container=document.getElementById("subjects");
     container.innerHTML="";
 
     subjects.forEach((sub,i)=>{
 
-        const examAvg=(sub.scores.reduce((a,b)=>a+b,0))/4;
-        const final=examAvg*sub.rate+sub.assignment;
-        const remaining=Math.max(0,60-final);
-        const pass=final>=60;
+        const div=document.createElement("div");
+        div.className="card";
+        div.innerHTML=`<b>${sub.name}</b>`;
+        
+        div.onclick=()=>openDetail(i);
 
-        const card=document.createElement("div");
-        card.className="card";
-
-        card.innerHTML=`
-
-<div class="subject-title">${sub.name}</div>
-
-<label>前期中間</label>
-<input type="number" value="${sub.scores[0]}" 
-oninput="updateScore(${i},0,this.value)">
-
-<label>前期期末</label>
-<input type="number" value="${sub.scores[1]}" 
-oninput="updateScore(${i},1,this.value)">
-
-<label>後期中間</label>
-<input type="number" value="${sub.scores[2]}" 
-oninput="updateScore(${i},2,this.value)">
-
-<label>後期期末</label>
-<input type="number" value="${sub.scores[3]}" 
-oninput="updateScore(${i},3,this.value)">
-
-<label>課題点</label>
-<input type="number" value="${sub.assignment}"
-oninput="updateAssignment(${i},this.value)">
-
-<div class="result ${pass?"pass":"fail"}">
-試験平均：${examAvg.toFixed(1)}<br>
-最終成績：${final.toFixed(1)}<br>
-${pass?"✅ 合格！":"❌ 単位まで残り "+remaining.toFixed(1)+" 点"}
-</div>
-
-<button class="delete" onclick="deleteSubject(${i})">
-科目を削除
-</button>
-`;
-
-        container.appendChild(card);
+        container.appendChild(div);
     });
 }
 
-render();
+// ===== 詳細画面 =====
+function openDetail(i){
+
+    const sub=subjects[i];
+    const container=document.getElementById("subjects");
+
+    container.innerHTML="";
+
+    const card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+<h2>${sub.name}</h2>
+
+前期中間<input type="number" value="${sub.scores[0]}" onchange="updateScore(${i},0,this.value)">
+前期期末<input type="number" value="${sub.scores[1]}" onchange="updateScore(${i},1,this.value)">
+後期中間<input type="number" value="${sub.scores[2]}" onchange="updateScore(${i},2,this.value)">
+後期期末<input type="number" value="${sub.scores[3]}" onchange="updateScore(${i},3,this.value)">
+課題点<input type="number" value="${sub.assignment}" onchange="updateAssignment(${i},this.value)">
+
+<div id="result"></div>
+
+<button onclick="renderList()">← 戻る</button>
+`;
+
+    container.appendChild(card);
+
+    updateResult(i);
+}
+
+// ===== 平均計算 =====
+function calcAverage(scores){
+    const valid=scores.filter(s=>s>0);
+    if(!valid.length) return 0;
+
+    return valid.reduce((a,b)=>a+b,0)/valid.length;
+}
+
+// ===== 結果更新（DOMだけ変更）=====
+function updateResult(i){
+
+    const sub=subjects[i];
+
+    const examAvg=calcAverage(sub.scores);
+    const final=examAvg*sub.rate+sub.assignment;
+    const remaining=Math.max(0,60-final);
+    const pass=final>=60;
+
+    document.getElementById("result").innerHTML=`
+試験平均：${examAvg.toFixed(1)}<br>
+最終成績：${final.toFixed(1)}<br>
+${pass?"✅ 合格！":"❌ 残り "+remaining.toFixed(1)+" 点"}
+`;
+}
+
+// ===== 更新 =====
+function updateScore(i,index,value){
+    subjects[i].scores[index]=parseFloat(value)||0;
+    save();
+    updateResult(i);
+}
+
+function updateAssignment(i,value){
+    subjects[i].assignment=parseFloat(value)||0;
+    save();
+    updateResult(i);
+}
+
+// 初期表示
+renderList();
