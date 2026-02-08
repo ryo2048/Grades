@@ -45,7 +45,6 @@ function renderList(){
 
         div.innerHTML=`
             <div class="subject-row">
-                <span class="drag-handle">☰</span>
                 <b>${sub.name}</b>
                 <button class="edit-mini">✏️</button>
                 <button class="delete-mini">×</button>
@@ -230,10 +229,10 @@ new Sortable(document.getElementById("subjects"), {
     animation:150,
     ghostClass:"sortable-ghost",
 
-    handle:".drag-handle", // ←★★★★★ 超重要
-
     delay:150,
     delayOnTouchOnly:true,
+
+    fallbackTolerance:8, // ←神
 
     onEnd:(evt)=>{
         const moved = subjects.splice(evt.oldIndex,1)[0];
@@ -241,4 +240,3 @@ new Sortable(document.getElementById("subjects"), {
         save();
     }
 });
-
