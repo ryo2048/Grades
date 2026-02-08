@@ -54,11 +54,15 @@ function renderList(){
             ${isOpen ? detailHTML(sub,i) : ""}
         `;
 
-        // ★ ヘッダークリックだけで開閉
-        div.querySelector(".subject-row")
-        .addEventListener("click",()=>{
-            openIndex = (openIndex===i) ? -1 : i;
-            renderList();
+       div.addEventListener("click",()=>{
+           openIndex = (openIndex===i) ? -1 : i;
+           renderList();
+       });
+
+        div.querySelector("b")
+        .addEventListener("click",(e)=>{
+            e.stopPropagation();
+            editName(i);
         });
 
         // ★ 削除
