@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>成績管理アプリ</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+📊 成績管理アプリ
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<div class="subject-title">科目を追加</div>
+
+<label>科目名</label>
+<input id="name">
+
+<label>試験割合（例：0.7）</label>
+<input id="rate" type="number" step="0.1">
+
+<button onclick="addSubject()">追加</button>
+
+</div>
+
+<div id="subjects"></div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
