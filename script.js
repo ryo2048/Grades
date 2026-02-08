@@ -1,3 +1,4 @@
+let draggedIndex=null;
 let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 
 function save(){
@@ -39,19 +40,35 @@ function renderList(){
 
         const div=document.createElement("div");
         div.className="card";
+        div.draggable=true;
 
         div.innerHTML=`
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="subject-row">
                 <b>${sub.name}</b>
-                <div>
-                    <button onclick="moveUp(${i},event)">↑</button>
-                    <button onclick="moveDown(${i},event)">↓</button>
-                    <button class="delete" onclick="deleteSubject(${i},event)">削除</button>
-                </div>
+                <button class="delete" onclick="deleteSubject(${i},event)">削除</button>
             </div>
         `;
-        
+
+        // 詳細へ
         div.onclick=()=>openDetail(i);
+
+        // ===== ドラッグ =====
+        div.addEventListener("dragstart",()=>{
+            draggedIndex=i;
+        });
+
+        div.addEventListener("dragover",(e)=>{
+            e.preventDefault();
+        });
+
+        div.addEventListener("drop",()=>{
+
+            const moved=subjects.splice(draggedIndex,1)[0];
+            subjects.splice(i,0,moved);
+
+            save();
+            renderList();
+        });
 
         container.appendChild(div);
     });
@@ -141,7 +158,11 @@ function updateResult(i){
     const remaining=Math.max(0,60-final);
     const pass=final>=60;
 
-    document.getElementById("result").innerHTML=`
+    const resultDiv=document.getElementById("result");
+
+    resultDiv.className="result " + (pass ? "pass" : "fail");
+
+    resultDiv.innerHTML=`
 試験平均：${examAvg.toFixed(1)}<br>
 最終成績：${final.toFixed(1)}<br>
 ${pass?"✅ 合格！":"❌ 残り "+remaining.toFixed(1)+" 点"}
