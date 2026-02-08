@@ -39,12 +39,58 @@ function renderList(){
 
         const div=document.createElement("div");
         div.className="card";
-        div.innerHTML=`<b>${sub.name}</b>`;
+
+        div.innerHTML=`
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b>${sub.name}</b>
+                <div>
+                    <button onclick="moveUp(${i},event)">↑</button>
+                    <button onclick="moveDown(${i},event)">↓</button>
+                    <button class="delete" onclick="deleteSubject(${i},event)">削除</button>
+                </div>
+            </div>
+        `;
         
         div.onclick=()=>openDetail(i);
 
         container.appendChild(div);
     });
+}
+
+function deleteSubject(i,event){
+
+    event.stopPropagation(); // ←超重要
+
+    if(!confirm("削除しますか？")) return;
+
+    subjects.splice(i,1);
+
+    save();
+    renderList();
+}
+
+function moveUp(i,event){
+
+    event.stopPropagation();
+
+    if(i===0) return;
+
+    [subjects[i-1],subjects[i]]=[subjects[i],subjects[i-1]];
+
+    save();
+    renderList();
+}
+
+function moveDown(i,event){
+
+    event.stopPropagation();
+
+    if(i===subjects.length-1) return;
+
+    [subjects[i+1],subjects[i]]=[subjects[i],subjects[i+1]];
+
+    save();
+    renderList();
 }
 
 // ===== 詳細画面 =====
@@ -61,11 +107,11 @@ function openDetail(i){
     card.innerHTML=`
 <h2>${sub.name}</h2>
 
-前期中間<input type="number" value="${sub.scores[0]}" onchange="updateScore(${i},0,this.value)">
-前期期末<input type="number" value="${sub.scores[1]}" onchange="updateScore(${i},1,this.value)">
-後期中間<input type="number" value="${sub.scores[2]}" onchange="updateScore(${i},2,this.value)">
-後期期末<input type="number" value="${sub.scores[3]}" onchange="updateScore(${i},3,this.value)">
-課題点<input type="number" value="${sub.assignment}" onchange="updateAssignment(${i},this.value)">
+前期中間<input type="number" inputmode="numeric" value="${sub.scores[0]}" onchange="updateScore(${i},0,this.value)">
+前期期末<input type="number" inputmode="numeric" value="${sub.scores[1]}" onchange="updateScore(${i},1,this.value)">
+後期中間<input type="number" inputmode="numeric" value="${sub.scores[2]}" onchange="updateScore(${i},2,this.value)">
+後期期末<input type="number" inputmode="numeric" value="${sub.scores[3]}" onchange="updateScore(${i},3,this.value)">
+課題点<input type="number" inputmode="numeric" value="${sub.assignment}" onchange="updateAssignment(${i},this.value)">
 
 <div id="result"></div>
 
