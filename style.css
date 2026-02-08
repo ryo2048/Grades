@@ -26,21 +26,35 @@ header{
 .subject-row{
     display:flex;
     align-items:center;
+    gap:10px;
 }
 
 .subject-row b{
     flex:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis; /* ←長い科目も1行 */
 }
 
 .delete-mini{
-    width:16px;
-    height:32px;
-    border-radius:8px;
+    width:26px;
+    height:26px;
+    min-width:26px;
+
+    border-radius:50%;   /* ←丸！ */
     border:none;
+
     background:#ff5c5c;
     color:white;
-    font-size:18px;
+
+    font-size:16px;
     font-weight:bold;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:0;
 }
 
 .card{
