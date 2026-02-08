@@ -1,3 +1,4 @@
+let touchStartY=0;
 let draggedIndex=null;
 let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 
@@ -40,31 +41,37 @@ function renderList(){
 
         const div=document.createElement("div");
         div.className="card";
-        div.draggable=true;
 
         div.innerHTML=`
             <div class="subject-row">
                 <b>${sub.name}</b>
-                <button class="delete" onclick="deleteSubject(${i},event)">削除</button>
+                <button class="delete-mini" onclick="deleteSubject(${i},event)">×</button>
             </div>
         `;
 
-        // 詳細へ
+        // 詳細
         div.onclick=()=>openDetail(i);
 
-        // ===== ドラッグ =====
-        div.addEventListener("dragstart",()=>{
+        // ===== タッチドラッグ =====
+        div.addEventListener("touchstart",(e)=>{
             draggedIndex=i;
+            touchStartY=e.touches[0].clientY;
         });
 
-        div.addEventListener("dragover",(e)=>{
-            e.preventDefault();
-        });
+        div.addEventListener("touchend",(e)=>{
 
-        div.addEventListener("drop",()=>{
+            const touchEndY=e.changedTouches[0].clientY;
+            const diff=touchEndY-touchStartY;
 
-            const moved=subjects.splice(draggedIndex,1)[0];
-            subjects.splice(i,0,moved);
+            // 下に移動
+            if(diff>50 && i<subjects.length-1){
+                [subjects[i],subjects[i+1]]=[subjects[i+1],subjects[i]];
+            }
+
+            // 上に移動
+            if(diff<-50 && i>0){
+                [subjects[i],subjects[i-1]]=[subjects[i-1],subjects[i]];
+            }
 
             save();
             renderList();
@@ -124,11 +131,11 @@ function openDetail(i){
     card.innerHTML=`
 <h2>${sub.name}</h2>
 
-前期中間<input type="number" inputmode="numeric" value="${sub.scores[0]}" onchange="updateScore(${i},0,this.value)">
-前期期末<input type="number" inputmode="numeric" value="${sub.scores[1]}" onchange="updateScore(${i},1,this.value)">
-後期中間<input type="number" inputmode="numeric" value="${sub.scores[2]}" onchange="updateScore(${i},2,this.value)">
-後期期末<input type="number" inputmode="numeric" value="${sub.scores[3]}" onchange="updateScore(${i},3,this.value)">
-課題点<input type="number" inputmode="numeric" value="${sub.assignment}" onchange="updateAssignment(${i},this.value)">
+前期中間<input type="number" inputmode="numeric" value="${sub.scores[0]}" oninput="updateScore(${i},0,this.value)">
+前期期末<input type="number" inputmode="numeric" value="${sub.scores[1]}" oninput="updateScore(${i},1,this.value)">
+後期中間<input type="number" inputmode="numeric" value="${sub.scores[2]}" oninput="updateScore(${i},2,this.value)">
+後期期末<input type="number" inputmode="numeric" value="${sub.scores[3]}" oninput="updateScore(${i},3,this.value)">
+課題点<input type="number" inputmode="numeric" value="${sub.assignment}" oninput="updateAssignment(${i},this.value)">
 
 <div id="result"></div>
 
