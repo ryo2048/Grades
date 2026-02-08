@@ -53,11 +53,6 @@ function renderList(){
             ${isOpen ? detailHTML(sub,i) : ""}
         `;
 
-        div.addEventListener("click",()=>{
-            openIndex = (openIndex===i) ? -1 : i;
-            renderList();
-        });
-
         div.querySelector(".subject-row")
         .addEventListener("click",()=>{
             openIndex = (openIndex===i) ? -1 : i;
