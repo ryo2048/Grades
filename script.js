@@ -1,3 +1,4 @@
+let openIndex = -1;
 let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 
 function save(){
@@ -40,26 +41,62 @@ function renderList(){
         const div=document.createElement("div");
         div.className="card";
 
+        const isOpen = openIndex===i;
+
         div.innerHTML=`
             <div class="subject-row">
                 <b>${sub.name}</b>
                 <button class="delete-mini">×</button>
             </div>
+
+            ${isOpen ? detailHTML(sub,i) : ""}
         `;
 
+        // 削除ボタン（イベント伝播停止）
         div.querySelector(".delete-mini")
         .addEventListener("click",(e)=>{
-            e.stopPropagation(); // ← 親のクリックを止める
+            e.stopPropagation();
             deleteSubject(i);
         });
 
-        // 詳細
+        // タップで開閉
         div.addEventListener("click",()=>{
-            openDetail(i);
+
+            openIndex = (openIndex===i) ? -1 : i;
+
+            renderList();
         });
 
         container.appendChild(div);
     });
+
+    // 開いているカードの結果を更新
+    if(openIndex!==-1){
+        updateResult(openIndex);
+    }
+}
+
+function detailHTML(sub,i){
+    return `
+<hr>
+
+前期中間<input type="number" value="${sub.scores[0]}"
+oninput="updateScore(${i},0,this.value)">
+
+前期期末<input type="number" value="${sub.scores[1]}"
+oninput="updateScore(${i},1,this.value)">
+
+後期中間<input type="number" value="${sub.scores[2]}"
+oninput="updateScore(${i},2,this.value)">
+
+後期期末<input type="number" value="${sub.scores[3]}"
+oninput="updateScore(${i},3,this.value)">
+
+課題点<input type="number" value="${sub.assignment}"
+oninput="updateAssignment(${i},this.value)">
+
+<div id="result-${i}"></div>
+`;
 }
 
 function deleteSubject(i){
@@ -68,10 +105,16 @@ function deleteSubject(i){
 
     subjects.splice(i,1);
 
+    // 開いていたカード対策
+    if(openIndex===i){
+        openIndex=-1;
+    }else if(openIndex>i){
+        openIndex--;
+    }
+
     save();
     renderList();
 }
-
 
 function moveUp(i,event){
 
@@ -97,36 +140,6 @@ function moveDown(i,event){
     renderList();
 }
 
-// ===== 詳細画面 =====
-function openDetail(i){
-
-    const sub=subjects[i];
-    const container=document.getElementById("subjects");
-
-    container.innerHTML="";
-
-    const card=document.createElement("div");
-    card.className="card";
-
-    card.innerHTML=`
-<h2>${sub.name}</h2>
-
-前期中間<input type="number" inputmode="numeric" value="${sub.scores[0]}" oninput="updateScore(${i},0,this.value)">
-前期期末<input type="number" inputmode="numeric" value="${sub.scores[1]}" oninput="updateScore(${i},1,this.value)">
-後期中間<input type="number" inputmode="numeric" value="${sub.scores[2]}" oninput="updateScore(${i},2,this.value)">
-後期期末<input type="number" inputmode="numeric" value="${sub.scores[3]}" oninput="updateScore(${i},3,this.value)">
-課題点<input type="number" inputmode="numeric" value="${sub.assignment}" oninput="updateAssignment(${i},this.value)">
-
-<div id="result"></div>
-
-<button onclick="renderList()">← 戻る</button>
-`;
-
-    container.appendChild(card);
-
-    updateResult(i);
-}
-
 // ===== 平均計算 =====
 function calcAverage(scores){
     const valid=scores.filter(s=>s>0);
@@ -145,7 +158,8 @@ function updateResult(i){
     const remaining=Math.max(0,60-final);
     const pass=final>=60;
 
-    const resultDiv=document.getElementById("result");
+    const resultDiv=document.getElementById(`result-${i}`);
+    if(!resultDiv) return;
 
     resultDiv.className="result " + (pass ? "pass" : "fail");
 
