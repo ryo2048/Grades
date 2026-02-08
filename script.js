@@ -53,17 +53,17 @@ function renderList(){
             ${isOpen ? detailHTML(sub,i) : ""}
         `;
 
-       div.addEventListener("click",()=>{
-           openIndex = (openIndex===i) ? -1 : i;
-           renderList();
-       });
-
-        div.querySelector("b")
-        .addEventListener("click",(e)=>{
-            e.stopPropagation();
-            editName(i);
+        div.addEventListener("click",()=>{
+            openIndex = (openIndex===i) ? -1 : i;
+            renderList();
         });
 
+        div.querySelector(".subject-row")
+        .addEventListener("click",()=>{
+            openIndex = (openIndex===i) ? -1 : i;
+            renderList();
+        });
+        
         // ★ 削除
         div.querySelector(".delete-mini")
         .addEventListener("click",(e)=>{
@@ -231,8 +231,9 @@ new Sortable(document.getElementById("subjects"), {
 
     delay:150,
     delayOnTouchOnly:true,
+    fallbackTolerance:8,
 
-    fallbackTolerance:8, // ←神
+    preventOnFilter:false, // ←追加
 
     onEnd:(evt)=>{
         const moved = subjects.splice(evt.oldIndex,1)[0];
@@ -240,3 +241,4 @@ new Sortable(document.getElementById("subjects"), {
         save();
     }
 });
+
