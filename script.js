@@ -59,23 +59,10 @@ function renderList(){
         });
 
         container.appendChild(div);
-
-        new Sortable(document.getElementById("subjects"), {
-            animation:150,
-            ghostClass:"sortable-ghost",
-
-            onEnd:(evt)=>{
-                const moved = subjects.splice(evt.oldIndex,1)[0];
-                subjects.splice(evt.newIndex,0,moved);
-                save();
-            }
-        });
     });
 }
 
-function deleteSubject(i,event){
-
-    event.stopPropagation(); // ←超重要
+function deleteSubject(i){
 
     if(!confirm("削除しますか？")) return;
 
@@ -84,6 +71,7 @@ function deleteSubject(i,event){
     save();
     renderList();
 }
+
 
 function moveUp(i,event){
 
@@ -183,3 +171,18 @@ function updateAssignment(i,value){
 
 // 初期表示
 renderList();
+
+new Sortable(document.getElementById("subjects"), {
+    animation:150,
+    ghostClass:"sortable-ghost",
+
+    delay:150,          // ←神設定
+    delayOnTouchOnly:true,
+
+    onEnd:(evt)=>{
+        const moved = subjects.splice(evt.oldIndex,1)[0];
+        subjects.splice(evt.newIndex,0,moved);
+        save();
+    }
+});
+
