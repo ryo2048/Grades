@@ -44,25 +44,45 @@ function renderList(){
         const isOpen = openIndex===i;
 
         div.innerHTML=`
-            <div class="subject-row" onclick="toggleCard(${i})">
-                <b onclick="editName(${i},event)">${sub.name}</b>
+            <div class="subject-row">
+                <b class="subject-name">${sub.name}</b>
                 <button class="delete-mini">×</button>
             </div>
-            
+
             ${isOpen ? detailHTML(sub,i) : ""}
         `;
 
-        // 削除ボタン（イベント伝播停止）
+        // ★ ヘッダークリックだけで開閉
+        div.querySelector(".subject-row")
+        .addEventListener("click",()=>{
+            openIndex = (openIndex===i) ? -1 : i;
+            renderList();
+        });
+
+        // ★ 名前クリック → 開閉しない
+        div.querySelector(".subject-name")
+        .addEventListener("click",(e)=>{
+            e.stopPropagation();
+            editName(i);
+        });
+
+        // ★ 削除
         div.querySelector(".delete-mini")
         .addEventListener("click",(e)=>{
             e.stopPropagation();
             deleteSubject(i);
         });
 
+        // ★ input触ったときカード閉じるの防止（超重要）
+        div.querySelectorAll("input").forEach(input=>{
+            input.addEventListener("click",(e)=>{
+                e.stopPropagation();
+            });
+        });
+
         container.appendChild(div);
     });
 
-    // 開いているカードの結果を更新
     if(openIndex!==-1){
         updateResult(openIndex);
     }
@@ -75,9 +95,7 @@ function toggleCard(i){
     renderList();
 }
 
-function editName(i,event){
-
-    event.stopPropagation(); // カード開閉を防ぐ
+function editName(i){
 
     const current = subjects[i].name;
 
