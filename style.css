@@ -50,9 +50,8 @@ header{
     margin-bottom:10px;
     box-shadow:0 4px 10px rgba(0,0,0,0.05);
 
-    user-select:none;      /* ←これ重要 */
+    user-select:none;
     -webkit-user-select:none;
-    touch-action:none;     /* ←スマホ必須 */
 }
 
 input{
