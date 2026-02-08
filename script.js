@@ -44,11 +44,11 @@ function renderList(){
         const isOpen = openIndex===i;
 
         div.innerHTML=`
-            <div class="subject-row">
+            <div class="subject-row" onclick="toggleCard(${i})">
                 <b onclick="editName(${i},event)">${sub.name}</b>
                 <button class="delete-mini">×</button>
             </div>
-
+            
             ${isOpen ? detailHTML(sub,i) : ""}
         `;
 
@@ -59,14 +59,6 @@ function renderList(){
             deleteSubject(i);
         });
 
-        // タップで開閉
-        div.addEventListener("click",()=>{
-
-            openIndex = (openIndex===i) ? -1 : i;
-
-            renderList();
-        });
-
         container.appendChild(div);
     });
 
@@ -74,6 +66,13 @@ function renderList(){
     if(openIndex!==-1){
         updateResult(openIndex);
     }
+}
+
+function toggleCard(i){
+
+    openIndex = (openIndex===i) ? -1 : i;
+
+    renderList();
 }
 
 function editName(i,event){
@@ -96,19 +95,19 @@ function detailHTML(sub,i){
     return `
 <hr>
 
-前期中間<input type="number" value="${sub.scores[0]}"
+前期中間<input type="number" onclick="event.stopPropagation()" value="${sub.scores[0]}"
 oninput="updateScore(${i},0,this.value)">
 
-前期期末<input type="number" value="${sub.scores[1]}"
+前期期末<input type="number" onclick="event.stopPropagation()" value="${sub.scores[1]}"
 oninput="updateScore(${i},1,this.value)">
 
-後期中間<input type="number" value="${sub.scores[2]}"
+後期中間<input type="number" onclick="event.stopPropagation()" value="${sub.scores[2]}"
 oninput="updateScore(${i},2,this.value)">
 
-後期期末<input type="number" value="${sub.scores[3]}"
+後期期末<input type="number" onclick="event.stopPropagation()" value="${sub.scores[3]}"
 oninput="updateScore(${i},3,this.value)">
 
-課題点<input type="number" value="${sub.assignment}"
+課題点<input type="number" onclick="event.stopPropagation()" value="${sub.assignment}"
 oninput="updateAssignment(${i},this.value)">
 
 <div id="result-${i}"></div>
