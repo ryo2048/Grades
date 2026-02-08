@@ -68,6 +68,15 @@ header{
     -webkit-user-select:none;
 }
 
+.sortable-ghost{
+    opacity:0.4;
+}
+
+.sortable-chosen{
+    transform:scale(1.03);
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
 input{
     width:100%;
     padding:12px;
