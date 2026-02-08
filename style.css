@@ -34,7 +34,6 @@ header{
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    cursor:pointer; /* ←追加 */
 }
 
 .subject-row b:hover{
