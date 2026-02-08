@@ -45,7 +45,7 @@ function renderList(){
 
         div.innerHTML=`
             <div class="subject-row">
-                <b>${sub.name}</b>
+                <b onclick="editName(${i},event)">${sub.name}</b>
                 <button class="delete-mini">×</button>
             </div>
 
@@ -74,6 +74,22 @@ function renderList(){
     if(openIndex!==-1){
         updateResult(openIndex);
     }
+}
+
+function editName(i,event){
+
+    event.stopPropagation(); // カード開閉を防ぐ
+
+    const current = subjects[i].name;
+
+    const newName = prompt("新しい科目名を入力", current);
+
+    if(!newName || newName===current) return;
+
+    subjects[i].name = newName;
+
+    save();
+    renderList();
 }
 
 function detailHTML(sub,i){
