@@ -1,5 +1,3 @@
-let touchStartY=0;
-let draggedIndex=null;
 let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 
 function save(){
@@ -45,41 +43,33 @@ function renderList(){
         div.innerHTML=`
             <div class="subject-row">
                 <b>${sub.name}</b>
-                <button class="delete-mini" onclick="deleteSubject(${i},event)">×</button>
+                <button class="delete-mini">×</button>
             </div>
         `;
+
+        div.querySelector(".delete-mini")
+        .addEventListener("click",(e)=>{
+            e.stopPropagation(); // ← 親のクリックを止める
+            deleteSubject(i);
+        });
 
         // 詳細
         div.addEventListener("click",()=>{
             openDetail(i);
         });
 
-        // ===== タッチドラッグ =====
-        div.addEventListener("touchstart",(e)=>{
-            draggedIndex=i;
-            touchStartY=e.touches[0].clientY;
-        });
-
-        div.addEventListener("touchend",(e)=>{
-
-            const touchEndY=e.changedTouches[0].clientY;
-            const diff=touchEndY-touchStartY;
-
-            // 下に移動
-            if(diff>50 && i<subjects.length-1){
-                [subjects[i],subjects[i+1]]=[subjects[i+1],subjects[i]];
-            }
-
-            // 上に移動
-            if(diff<-50 && i>0){
-                [subjects[i],subjects[i-1]]=[subjects[i-1],subjects[i]];
-            }
-
-            save();
-            renderList();
-        });
-
         container.appendChild(div);
+
+        new Sortable(document.getElementById("subjects"), {
+            animation:150,
+            ghostClass:"sortable-ghost",
+
+            onEnd:(evt)=>{
+                const moved = subjects.splice(evt.oldIndex,1)[0];
+                subjects.splice(evt.newIndex,0,moved);
+                save();
+            }
+        });
     });
 }
 
