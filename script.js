@@ -39,7 +39,19 @@ function renderList(){
     subjects.forEach((sub,i)=>{
 
         const div=document.createElement("div");
-        div.className="card";
+        
+        let cardClass="card";
+        
+        const examAvg = calcAverage(sub.scores);
+        const final = examAvg*sub.rate + sub.assignment;
+        
+        if(final>=60){
+            cardClass+=" pass-card";
+        }else if(final>0){
+            cardClass+=" fail-card";
+        }
+        
+        div.className=cardClass;
 
         const isOpen = openIndex===i;
 
