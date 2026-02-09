@@ -172,3 +172,12 @@ button:active{
 .card.fail-card{
     background:#fff5f5; /* 超うっすら赤 */
 }
+
+#overallCard{
+    background:linear-gradient(135deg,#4a6cff,#6f86ff);
+    color:white;
+}
+
+#overallCard .subject-title{
+    color:white;
+}
