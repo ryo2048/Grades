@@ -1,3 +1,6 @@
+未入力を0にする設計に変えてください。
+
+
 let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 const container = document.getElementById("subjects");
 let isDragging = false;
@@ -188,42 +191,53 @@ ${pass?"✅ 合格":"❌ 不合格"}
 
 function calcOverall(){
 
-    if(subjects.length===0){
-        document.getElementById("overallResult").innerHTML="データなし";
-        return;
-    }
-
-    let mid1=0;   // 前期中間
-    let final1=0; // 前期期末
-    let mid2=0;   // 後期中間
-    let final2=0; // 後期期末
+    let mid1=0, mid1Count=0;
+    let final1=0, final1Count=0;
+    let mid2=0, mid2Count=0;
+    let final2=0, final2Count=0;
 
     subjects.forEach(sub=>{
 
         const s=sub.scores;
         const assign=sub.assignment;
 
-        // 前期中間（課題なし）
-        mid1+=s[0];
+        // ✅ 前期中間（0は除外）
+        if(s[0] > 0){
+            mid1 += s[0];
+            mid1Count++;
+        }
 
-        // 前期期末
-        final1+=((s[0]+s[1])/2)*sub.rate + assign;
+        // ✅ 前期期末（両方入力されている時だけ）
+        const firstAvg = calcAverage([s[0], s[1]]);
 
-        // 後期中間（課題なし）
-        mid2+=s[2];
+        if(firstAvg > 0){
+            final1 += firstAvg * sub.rate + assign;
+            final1Count++;
+        }
 
-        // 後期期末
-        const examAvg=(s[0]+s[1]+s[2]+s[3])/4;
-        final2+=examAvg*sub.rate + assign;
+        // ✅ 後期中間
+        if(s[2] > 0){
+            mid2 += s[2];
+            mid2Count++;
+        }
+
+        // 後期期末（0を除外して平均）
+        const examAvg = calcAverage(s);
+
+        if(examAvg > 0){
+            final2 += examAvg * sub.rate + assign;
+            final2Count++;
+        }
     });
 
-    const n=subjects.length;
+    // ★ 分母0対策（これ超重要）
+    const avg = (sum,count)=> count ? (sum/count).toFixed(1) : "-";
 
     document.getElementById("overallResult").innerHTML=`
-前期中間：${(mid1/n).toFixed(1)}<br>
-前期期末：${(final1/n).toFixed(1)}<br>
-後期中間：${(mid2/n).toFixed(1)}<br>
-後期期末：${(final2/n).toFixed(1)}
+前期中間：${avg(mid1,mid1Count)}<br>
+前期期末：${avg(final1,final1Count)}<br>
+後期中間：${avg(mid2,mid2Count)}<br>
+後期期末：${avg(final2,final2Count)}
 `;
 }
 
