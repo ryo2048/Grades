@@ -1,6 +1,3 @@
-未入力を0にする設計に変えてください。
-
-
 let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 const container = document.getElementById("subjects");
 let isDragging = false;
