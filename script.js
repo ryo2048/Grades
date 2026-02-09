@@ -82,13 +82,34 @@ function createCard(sub,i){
 
     edit.addEventListener("click",(e)=>{
         e.stopPropagation();
-
-        const newName=prompt("新しい科目名",sub.name);
-        if(!newName) return;
-
-        sub.name=newName;
-        name.textContent=newName;
+    
+        const newName = prompt("新しい科目名", sub.name);
+        if(newName === null) return;
+    
+        const newRate = prompt("試験割合（0〜1）", sub.rate);
+        if(newRate === null) return;
+    
+        const rateNum = parseFloat(newRate);
+    
+        if(newName.trim() === "" || isNaN(rateNum)){
+            alert("正しく入力してください！");
+            return;
+        }
+    
+        sub.name = newName;
+        sub.rate = rateNum;
+    
+        name.textContent = newName;
+    
         save();
+    
+        // 開いているdetailがあれば再計算
+        const detail = card.querySelector(".detail");
+        if(detail){
+            updateResult(detail, sub);
+        }
+    
+        updateCardColor(card, sub);
     });
 
     /////////////////////////////////////////////
