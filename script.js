@@ -4,6 +4,7 @@ let isDragging = false;
 
 function save(){
     localStorage.setItem("subjects",JSON.stringify(subjects));
+    calcOverall(); // ←追加（超重要）
 }
 
 //////////////////////////////////////////////////////////
@@ -185,6 +186,47 @@ ${pass?"✅ 合格":"❌ 不合格"}
 
 }
 
+function calcOverall(){
+
+    if(subjects.length===0){
+        document.getElementById("overallResult").innerHTML="データなし";
+        return;
+    }
+
+    let mid1=0;   // 前期中間
+    let final1=0; // 前期期末
+    let mid2=0;   // 後期中間
+    let final2=0; // 後期期末
+
+    subjects.forEach(sub=>{
+
+        const s=sub.scores;
+        const assign=sub.assignment;
+
+        // 前期中間（課題なし）
+        mid1+=s[0];
+
+        // 前期期末
+        final1+=((s[0]+s[1])/2)*sub.rate + assign;
+
+        // 後期中間（課題なし）
+        mid2+=s[2];
+
+        // 後期期末
+        const examAvg=(s[0]+s[1]+s[2]+s[3])/4;
+        final2+=examAvg*sub.rate + assign;
+    });
+
+    const n=subjects.length;
+
+    document.getElementById("overallResult").innerHTML=`
+前期中間：${(mid1/n).toFixed(1)}<br>
+前期期末：${(final1/n).toFixed(1)}<br>
+後期中間：${(mid2/n).toFixed(1)}<br>
+後期期末：${(final2/n).toFixed(1)}
+`;
+}
+
 //////////////////////////////////////////////////////////
 // カード色更新
 //////////////////////////////////////////////////////////
@@ -249,6 +291,8 @@ function addSubject(){
 subjects.forEach((sub,i)=>{
     container.appendChild(createCard(sub,i));
 });
+
+calcOverall(); // ←追加
 
 //////////////////////////////////////////////////////////
 // Sortable（超安定版）
