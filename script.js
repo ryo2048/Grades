@@ -32,6 +32,7 @@ function addSubject(){
 
 // ===== 一覧表示 =====
 function renderList(){
+    const scrollY = window.scrollY; // ★追加
 
     const container=document.getElementById("subjects");
     container.innerHTML="";
@@ -93,6 +94,7 @@ function renderList(){
         });
 
         container.appendChild(div);
+        window.scrollTo(0, scrollY); // ★追加
     });
 
     if(openIndex!==-1){
