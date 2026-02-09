@@ -82,35 +82,81 @@ function createCard(sub,i){
 
     edit.addEventListener("click",(e)=>{
         e.stopPropagation();
-    
-        const newName = prompt("新しい科目名", sub.name);
-        if(newName === null) return;
-    
-        const newRate = prompt("試験割合（0〜1）", sub.rate);
-        if(newRate === null) return;
-    
-        const rateNum = parseFloat(newRate);
-    
-        if(newName.trim() === "" || isNaN(rateNum)){
-            alert("正しく入力してください！");
-            return;
-        }
-    
-        sub.name = newName;
-        sub.rate = rateNum;
-    
-        name.textContent = newName;
-    
-        save();
-    
-        // 開いているdetailがあれば再計算
-        const detail = card.querySelector(".detail");
-        if(detail){
-            updateResult(detail, sub);
-        }
-    
-        updateCardColor(card, sub);
+        openEditModal(sub, name, card);
     });
+
+    function openEditModal(sub, nameElem, card){
+    
+        // 背景
+        const overlay = document.createElement("div");
+        overlay.style.cssText = `
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.4);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index:1000;
+        `;
+    
+        // モーダル本体
+        const modal = document.createElement("div");
+        modal.style.cssText = `
+            background:#fff;
+            padding:16px;
+            border-radius:8px;
+            min-width:260px;
+            box-shadow:0 10px 30px rgba(0,0,0,.3);
+        `;
+    
+        modal.innerHTML = `
+            <div>
+                科目名<br>
+                <input id="editName" value="${sub.name}">
+            </div>
+            <div style="margin-top:8px">
+                試験割合（0〜1）<br>
+                <input id="editRate" type="number" step="0.1" value="${sub.rate}">
+            </div>
+            <div style="margin-top:12px; text-align:right">
+                <button id="cancel">Cancel</button>
+                <button id="ok">OK</button>
+            </div>
+        `;
+    
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+    
+        // 閉じる共通処理
+        const close = () => overlay.remove();
+    
+        overlay.addEventListener("click", close);
+        modal.addEventListener("click", e => e.stopPropagation());
+    
+        modal.querySelector("#cancel").onclick = close;
+    
+        modal.querySelector("#ok").onclick = () => {
+            const newName = modal.querySelector("#editName").value.trim();
+            const rateNum = parseFloat(modal.querySelector("#editRate").value);
+    
+            if(!newName || isNaN(rateNum)){
+                alert("正しく入力してください！");
+                return;
+            }
+    
+            sub.name = newName;
+            sub.rate = rateNum;
+            nameElem.textContent = newName;
+    
+            save();
+    
+            const detail = card.querySelector(".detail");
+            if(detail) updateResult(detail, sub);
+            updateCardColor(card, sub);
+    
+            close();
+        };
+    }
 
     /////////////////////////////////////////////
     // 削除
