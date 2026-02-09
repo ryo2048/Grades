@@ -6,7 +6,8 @@ body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
     background:#eef2f7;
-    overscroll-behavior: contain;
+    height:100vh;
+    overflow:hidden; /* ←これ重要 */
 }
 
 header{
@@ -22,6 +23,9 @@ header{
     padding:15px;
     max-width:700px;
     margin:auto;
+    height:calc(100vh - 70px); /* header分引く */
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch; /* iPhoneで超重要 */
 }
 
 .subject-row{
@@ -53,7 +57,7 @@ header{
     height:26px;
     min-width:26px;
 
-    border-radius:50%;
+    border-radius:50%;   /* ←丸！ */
     border:none;
 
     background:#ff5c5c;
