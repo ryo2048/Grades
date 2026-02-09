@@ -38,6 +38,12 @@ header{
     text-overflow:ellipsis;
 }
 
+.drag-handle{
+    cursor:grab;
+    font-size:18px;
+    user-select:none;
+}
+
 .subject-row b:hover{
     opacity:0.7;
 }
@@ -90,11 +96,6 @@ header{
     border-radius:14px;
     margin-bottom:10px;
     box-shadow:0 4px 10px rgba(0,0,0,0.05);
-
-    user-select:none;
-    -webkit-user-select:none;
-
-    touch-action:manipulation;
 }
 
 .sortable-ghost{
@@ -116,7 +117,7 @@ input{
     font-size:16px;
 }
 
-button{
+.container > .card button{
     width:100%;
     padding:14px;
     border:none;
