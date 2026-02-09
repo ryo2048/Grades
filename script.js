@@ -2,6 +2,9 @@ let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 const container = document.getElementById("subjects");
 let isDragging = false;
 
+document.getElementById("addBtn")
+    .addEventListener("click", addSubject);
+
 function save(){
     localStorage.setItem("subjects",JSON.stringify(subjects));
     calcOverall(); // ←追加（超重要）
@@ -309,21 +312,18 @@ calcOverall(); // ←追加
 // Sortable（超安定版）
 //////////////////////////////////////////////////////////
 
-new Sortable(container,{
-    animation:150,
-    ghostClass:"sortable-ghost",
-    handle: ".drag-handle",
-
-    onStart: () => {
-        isDragging = true;
-    },
-    onEnd: (evt) => {
-        const moved = subjects.splice(evt.oldIndex,1)[0];
-        subjects.splice(evt.newIndex,0,moved);
-        save();
-        closeAllCards();
-
-        // 少し遅らせて解除（これ超重要）
-        setTimeout(()=> isDragging = false, 0);
-    }
-});
+if(container){
+    new Sortable(container,{
+        animation:150,
+        ghostClass:"sortable-ghost",
+        handle: ".drag-handle",
+        onStart: () => isDragging = true,
+        onEnd: (evt) => {
+            const moved = subjects.splice(evt.oldIndex,1)[0];
+            subjects.splice(evt.newIndex,0,moved);
+            save();
+            closeAllCards();
+            setTimeout(()=> isDragging = false, 0);
+        }
+    });
+}
