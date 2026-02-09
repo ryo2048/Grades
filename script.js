@@ -235,9 +235,10 @@ function calcAverage(scores){
 
 function updateResult(detail,sub){
 
-    const examAvg=calcAverage(sub.scores);
-    const final=examAvg*sub.rate+sub.assignment;
-    const pass=final>=60;
+    const examAvg = calcAverage(sub.scores);
+    const final = examAvg*sub.rate + sub.assignment;
+    const finalCeil = Math.ceil(final);
+    const pass = finalCeil >= 60; // ←ここもceil基準が自然
 
     const result=detail.querySelector(".result");
 
@@ -245,7 +246,7 @@ function updateResult(detail,sub){
 
     result.innerHTML=`
 試験平均：${examAvg.toFixed(1)}<br>
-最終成績：${final.toFixed(1)}<br>
+最終成績：${final.toFixed(1)} (${finalCeil})<br>
 ${pass?"✅ 合格":"❌ 不合格"}
 `;
 
@@ -253,7 +254,6 @@ ${pass?"✅ 合格":"❌ 不合格"}
     if(card){
         updateCardColor(card,sub);
     }
-
 }
 
 function calcOverall(){
@@ -278,7 +278,8 @@ function calcOverall(){
         const firstAvg = calcAverage([s[0], s[1]]);
 
         if(firstAvg > 0){
-            final1 += firstAvg * sub.rate + assign;
+            const firstFinal = Math.ceil(firstAvg * sub.rate + assign);
+            final1 += firstFinal;
             final1Count++;
         }
 
@@ -292,7 +293,8 @@ function calcOverall(){
         const examAvg = calcAverage(s);
 
         if(examAvg > 0){
-            final2 += examAvg * sub.rate + assign;
+            const secondFinal = Math.ceil(examAvg * sub.rate + assign);
+            final2 += secondFinal;
             final2Count++;
         }
     });
@@ -317,9 +319,10 @@ function updateCardColor(card,sub){
     card.classList.remove("pass-card","fail-card");
 
     const avg=calcAverage(sub.scores);
-    const final=avg*sub.rate+sub.assignment;
-
-    if(final>=60){
+    const final = avg*sub.rate+sub.assignment;
+    const finalCeil = Math.ceil(final);
+    
+    if(finalCeil>=60){
         card.classList.add("pass-card");
     }else if(final>0){
         card.classList.add("fail-card");
