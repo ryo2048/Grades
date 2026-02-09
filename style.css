@@ -53,7 +53,7 @@ header{
     height:26px;
     min-width:26px;
 
-    border-radius:50%;   /* ←丸！ */
+    border-radius:50%;
     border:none;
 
     background:#ff5c5c;
