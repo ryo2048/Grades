@@ -181,3 +181,50 @@ button:active{
 #overallCard .subject-title{
     color:white;
 }
+
+/* ===== モーダル内ボタン共通 ===== */
+#cancel,
+#ok{
+    min-width:80px;
+    padding:10px 16px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.1s ease;
+}
+
+/* ===== Cancel ===== */
+#cancel{
+    background:#f1f3f5;
+    color:#555;
+    border:1px solid #ddd;
+    margin-right:8px;
+}
+
+#cancel:hover{
+    background:#e9ecef;
+}
+
+#cancel:active{
+    transform:scale(0.97);
+}
+
+/* ===== OK ===== */
+#ok{
+    background:linear-gradient(135deg,#4a6cff,#6f86ff);
+    color:white;
+    border:none;
+    box-shadow:0 4px 12px rgba(74,108,255,0.35);
+}
+
+#ok:hover{
+    box-shadow:0 6px 16px rgba(74,108,255,0.45);
+}
+
+#ok:active{
+    transform:scale(0.97);
+}
